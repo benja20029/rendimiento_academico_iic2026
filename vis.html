@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.js"></script>
+    <script src="https://unpkg.com/topojson@3"></script>
+    <script src="https://d3-legend.susielu.com/d3-legend.min.js"></script>
+
+    
+    <title>Rendimiento Academico por Estudiante</title>
+</head>
+<body>
+    <div class="container-principal">
+        <div id="vis_mapa">
+            <p id="titulo_mapa" style="margin-right: 100px;"> Geographic chart: Promedios generales de estudiantes de basica y media v/s region </p>
+        </div>
+        <div class="vertical_container">
+            <div id="vis_puntos">
+                <p> Linegraph: Promedios generales de estudiantes de basica y media a traves de los años por tipo de establecimiento</p>
+            </div>
+            <div id="vis_cajas">
+                <p> Vis cajas</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="vis_1.js"></script>
+    <script src="configuration.js"></script>
+    <script src="vis_2.js"></script>
+    <script src="vis_3.js"></script>  
+</body>
+</html>

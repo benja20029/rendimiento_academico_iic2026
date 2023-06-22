@@ -1,0 +1,118 @@
+body {
+    margin: 0 auto;
+    /* Puedes cambiar el color de fondo (background-color) si lo deseas */
+    background-color: rgba(173, 216, 230, 0.4);
+    max-width: 1200px;
+    min-width: 500px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+/* Completar este archivo con los que estime conveniente */
+.clover-group{
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.second-vis{
+    font-size: 17px;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: white;
+    border: 1px solid black;
+    padding: 5px;
+    font-size: 12px;
+    pointer-events: none;
+  }
+
+.second_vis_1{
+    font-size: 17px;
+}
+
+.items{
+    font-weight: bold;
+}
+
+#principal_page_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 50px;
+    margin-right: 50px;
+    
+}
+
+a{
+    margin-right: 30px;
+    margin-left: 30px;
+}
+
+a:visited{
+    text-decoration: none; 
+    color: #486da3;
+}
+
+.container-principal{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.vertical_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2px;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+}
+
+.tooltip {
+    position: absolute;
+    text-align: justify;
+    background-color: rgba(255,255,255, 1);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+    font-size: 14px;
+    width: 160px;
+    opacity: 0;
+  }
+  
+  .legend rect {
+    fill: rgba(173, 216, 230, 0.6);
+    stroke: #000;
+    stroke-width: 0.8px;
+    rx: 4px;
+    ry: 4px;
+  }
+  
+  .legend text {
+    fill: #000;
+    font-size: 12px;
+  }
+
+  #vis_mapa {
+    position: relative;
+}
+  
+
