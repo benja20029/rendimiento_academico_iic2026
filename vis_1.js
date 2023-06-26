@@ -138,7 +138,6 @@ function drawMap(averages, topo, svg, path, colorScale, tooltip, selectedType) {
     regions.append("path")
         .attr("d", path)
         .style("fill", function(d) {
-            console.log(d.properties.NOM_REG)
             const regionName = d.properties.NOM_REG;
             const averageGrade = averages[regionName];
             return averageGrade ? colorScale(averageGrade) : "grey";
