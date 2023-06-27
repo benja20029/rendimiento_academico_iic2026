@@ -1,2 +1,4 @@
 ## Ignore a csv file
 rendimiento_2010-2022.csv
+## Ignore dstore
+.DS_Store
