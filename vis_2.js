@@ -113,14 +113,16 @@ d3.csv("promedio_general_por_tipo_institucion_2010-2022.csv").then(function(data
             };
         });
 
-        tooltip.html("<br>" + "<strong>Tipo de establecimiento:</strong> " + d.type + "<br>" + "<br>" + "Diferencia de promedio general con establecimientos de tipo " + "</br>" +
-             diffGrades.map(function(e) {
-                if (e.type !== d.type){
-                return  "<strong>"+ e.type + "</strong>"+ ": " + d3.format(".3f")(e.diff)}
-                
-             }).join("<p>"))
-            .style("left", (event.pageX + 10) + "px")
-            .style("top", (event.pageY - 28) + "px");
+        tooltip.html("<p>Tipo de establecimiento: <strong>" + d.type + "</strong></p>" + 
+"<p>Diferencia de promedio general con establecimientos de tipo:</p>" +
+diffGrades.map(function(e) {
+    if (e.type !== d.type){
+        return  "<p><strong>"+ e.type + "</strong>"+ ": " + d3.format(".3f")(e.diff) + "</p>"
+    }   
+}).filter(Boolean).join("")) 
+.style("left", (event.pageX + 10) + "px")
+.style("top", (event.pageY - 28) + "px");
+
     })
     .on("mouseout", function() {
         // Hide the tooltip
