@@ -68,14 +68,13 @@ const yearEndDropdown = createDropdown(
   "30px"
 );
 
+yearEndDropdown.property("value", "2022");
+
 // Load grade data
 d3.csv("resumen_rendimiento_2010-2022.csv").then(function (gradeData) {
   var years = getUniqueYears(gradeData);
   years.sort(); // Sort the years in ascending order
 
-  // Add "Default" option
-  yearStartDropdown.append("option").attr("value", "2010").text("2010");
-  yearEndDropdown.append("option").attr("value", "2022").text("2022");
 
   // Add the rest of the years as options
   yearStartDropdown
@@ -90,7 +89,7 @@ d3.csv("resumen_rendimiento_2010-2022.csv").then(function (gradeData) {
       return d;
     });
 
-  yearEndDropdown
+    yearEndDropdown
     .selectAll("option")
     .data(years)
     .enter()
@@ -100,7 +99,11 @@ d3.csv("resumen_rendimiento_2010-2022.csv").then(function (gradeData) {
     })
     .text(function (d) {
       return d;
+    })
+    .attr("selected", function(d) {
+      return d === "2022" ? "selected" : null;
     });
+  
 
   var selectedType = dropdown.node().value;
   var selectedStartYear = yearStartDropdown.node().value;
@@ -208,8 +211,8 @@ function createDropdown(selector, element, insertBefore, id, position, left, top
 function calculateAverages(gradeData, selectedType, selectedStartYear, selectedEndYear) {
     const averages = gradeData.reduce((acc, curr) => {
       if (
-        (selectedStartYear === "Default" || curr.AGNO >= selectedStartYear) &&
-        (selectedEndYear === "Default" || curr.AGNO <= selectedEndYear) &&
+        (selectedStartYear === "2010" || curr.AGNO >= selectedStartYear) &&
+        (selectedEndYear === "2022" || curr.AGNO <= selectedEndYear) &&
         (selectedType === "Predeterminado" || curr.COD_DEPE === selectedType)
       ) {
         let region = curr.COD_REG_RBD;
