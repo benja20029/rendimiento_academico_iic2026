@@ -36,14 +36,27 @@ var G = SVG2.append("g").attr(
 );
 
 function loadLinegraphData(startYear, endYear) {
-  d3.csv("promedio_general_por_tipo_institucion_2010-2022.csv", (d) => {
-    if (d.AGNO >= startYear && d.AGNO <= endYear) {
-      return {
-        year: parseYear(d.AGNO),
-        grade: +d.PROM_GRAL_COMB,
-        type: d.COD_DEPE,
-      };
+  d3.csv("resumen_rendimiento_2010-2022.csv").then( (data) => {
+    // If selectedRegions is not empty, filter the data
+    console.log(data)
+    if (selectedRegions.length > 0) {
+      data = data.filter(d => selectedRegions.includes(d.COD_REG_RBD));
     }
+
+    // Group the data by AGNO and COD_DEPE
+    var groupedData = d3.group(data, d => d.AGNO, d => d.COD_DEPE);
+
+    // Convert Map to Array and calculate the average of PROM_GRAL for each group
+    var result = Array.from(groupedData, ([year, depeMap]) =>
+      Array.from(depeMap, ([depe, values]) => ({
+        "AGNO": year,
+        "COD_DEPE": depe,
+        "PROM_GRAL_COMB": d3.mean(values, d => +d.PROM_GRAL).toFixed(9) // Limit to 9 decimal places
+      }))
+    ).flat(); // Flatten the array
+
+    console.log(result); // Output the result
+
   }).then((data) => {
     updateLineGraph(data);
   });

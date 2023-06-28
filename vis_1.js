@@ -69,6 +69,7 @@ const yearEndDropdown = createDropdown(
 );
 
 yearEndDropdown.property("value", "2022");
+let selectedRegions = [];
 
 // Load grade data
 d3.csv("resumen_rendimiento_2010-2022.csv").then(function (gradeData) {
@@ -247,6 +248,15 @@ function drawMap(averages, topo, svg, path, colorScale, tooltip, selectedType) {
       const averageGrade = averages[regionName];
       return averageGrade ? colorScale(averageGrade) : "grey";
     })
+    .on("click", function (event, d) {
+      const regionName = d.properties.NOM_REG;
+      if (selectedRegions.includes(regionName)) {
+        selectedRegions = selectedRegions.filter(r => r !== regionName);
+      } else {
+        selectedRegions.push(regionName);
+      }
+      updateRegionOpacity();
+    })
     .on("mouseover", (event, d) => {
       const regionName = d.properties.NOM_REG;
       const averageGrade = averages[regionName];
@@ -280,6 +290,13 @@ function drawMap(averages, topo, svg, path, colorScale, tooltip, selectedType) {
       const regionName = d.properties.NOM_REG;
       const averageGrade = averages[regionName];
       return averageGrade ? averageGrade.toFixed(2) : "";
+    });
+}
+
+function updateRegionOpacity() {
+  SVG1.selectAll(".region path")
+    .style("opacity", function (d) {
+      return selectedRegions.includes(d.properties.NOM_REG) ? 1 : 0.3;
     });
 }
 
