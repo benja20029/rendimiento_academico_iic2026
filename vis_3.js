@@ -6,7 +6,7 @@ SVG3.append("rect").attr("width", 600).attr("height", 600).attr("fill", "rgba(17
 // Source: https://d3-graph-gallery.com/graph/boxplot_several_groups.html
 
 
-function loadData(startYear, endYear) {
+function loadBoxplotData(startYear, endYear) {
   d3.csv("promedio_general_por_tipo_institucion_2010-2022.csv",
     d => {
       if (d.AGNO >= startYear && d.AGNO <= endYear) {
@@ -191,16 +191,16 @@ function updateBoxplot(data) {
 
 // Update the chart when the user changes the years
 setTimeout(function() {
-  d3.select("#yearStart").on("change", function(d) {
-    loadData(this.value, d3.select("#yearEnd").property("value"));
+  d3.select("#yearStart").on("change.boxplot", function(d) {
+    loadBoxplotData(this.value, d3.select("#yearEnd").property("value"));
   });
 }, 1000);
 
 setTimeout(function() {
-  d3.select("#yearEnd").on("change", function(d) {
-    loadData(d3.select("#yearStart").property("value"), this.value);
+  d3.select("#yearEnd").on("change.boxplot", function(d) {
+    loadBoxplotData(d3.select("#yearStart").property("value"), this.value);
   });
 }, 1000);
 
 // Initialize the chart
-loadData(-Infinity, Infinity);
+loadBoxplotData(-Infinity, Infinity);

@@ -30,17 +30,24 @@ var svg = SVG2.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-// Get the data
-d3.csv("promedio_general_por_tipo_institucion_2010-2022.csv").then(function(data) {
-    // format the data
-    data = data.map(function(d) {
+function loadLinegraphData(startYear, endYear) {
+  d3.csv("promedio_general_por_tipo_institucion_2010-2022.csv",
+    d => {
+    if (d.AGNO >= startYear && d.AGNO <= endYear) {
         return {
-            year: parseYear(d.AGNO),
-            grade: +d.PROM_GRAL_COMB,
-            type: d.COD_DEPE
+        year: parseYear(d.AGNO),
+        grade: +d.PROM_GRAL_COMB,
+        type: d.COD_DEPE
         }
-    });
+    }
+  }).then(
+    data => {
+    updateLineGraph(data);
+    }
+  )
+}
 
+function updateLineGraph(data) {
     // Group data by 'type'
     var dataByType = d3.group(data, d => d.type);
 
@@ -101,11 +108,11 @@ d3.csv("promedio_general_por_tipo_institucion_2010-2022.csv").then(function(data
         tooltip.transition()
             .duration(200)
             .style("opacity", 0.9);
-            
+
         var sameYearData = data.filter(function(e) {
             return e.year.getTime() === d.year.getTime();
         });
-        
+
         var diffGrades = sameYearData.map(function(e) {
             return {
                 diff: Math.abs(e.grade - d.grade),
@@ -113,13 +120,13 @@ d3.csv("promedio_general_por_tipo_institucion_2010-2022.csv").then(function(data
             };
         });
 
-        tooltip.html("<p>Tipo de establecimiento: <strong>" + d.type + "</strong></p>" + 
+        tooltip.html("<p>Tipo de establecimiento: <strong>" + d.type + "</strong></p>" +
 "<p>Diferencia de promedio general con establecimientos de tipo:</p>" +
 diffGrades.map(function(e) {
     if (e.type !== d.type){
         return  "<p><strong>"+ e.type + "</strong>"+ ": " + d3.format(".3f")(e.diff) + "</p>"
-    }   
-}).filter(Boolean).join("")) 
+    }
+}).filter(Boolean).join(""))
 .style("left", (event.pageX + 10) + "px")
 .style("top", (event.pageY - 28) + "px");
 
@@ -185,7 +192,7 @@ legendItems.append("text")
     )
     .selectAll("text")
     .style("font-size", "12px") ;// Increase the font size of the axis labels
-    
+
 
     svg.append("g")
     .append("text")
@@ -202,7 +209,7 @@ legendItems.append("text")
     .call(d3.axisLeft(y))
     .selectAll("text")
     .style("font-size", "12px"); // Increase the font size of the axis labels
-    
+
 
     svg.append("g")
     .append("text")
@@ -216,4 +223,20 @@ legendItems.append("text")
     .style("font-weight", "bold")
 
         // rotate text
-});
+};
+
+// Update the chart when the user changes the years
+setTimeout(function() {
+  d3.select("#yearStart").on("change.linegraph", function(d) {
+    loadLinegraphData(this.value, d3.select("#yearEnd").property("value"));
+  });
+}, 1000);
+
+setTimeout(function() {
+  d3.select("#yearEnd").on("change.linegraph", function(d) {
+    loadLinegraphData(d3.select("#yearStart").property("value"), this.value);
+  });
+}, 1000);
+
+// Initialize the chart
+loadLinegraphData(-Infinity, Infinity);
