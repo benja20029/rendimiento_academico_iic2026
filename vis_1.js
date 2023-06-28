@@ -103,7 +103,7 @@ d3.csv("resumen_rendimiento_2010-2022.csv").then(function (gradeData) {
     .attr("selected", function(d) {
       return d === "2022" ? "selected" : null;
     });
-  
+
 
   var selectedType = dropdown.node().value;
   var selectedStartYear = yearStartDropdown.node().value;
@@ -226,12 +226,12 @@ function calculateAverages(gradeData, selectedType, selectedStartYear, selectedE
       }
       return acc;
     }, {});
-  
+
     return Object.keys(averages).reduce((acc, region) => {
       acc[region] = averages[region].total / averages[region].count;
       return acc;
     }, {});
-  }  
+  }
 
 function drawMap(averages, topo, svg, path, colorScale, tooltip, selectedType) {
   const regions = svg.selectAll(".region")
