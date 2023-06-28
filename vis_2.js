@@ -57,6 +57,44 @@ function updateLineGraph(data) {
     x.domain([new Date(yearExtent[0].getFullYear() - padding, 1), new Date(yearExtent[1].getFullYear() + padding, 9)]);
     y.domain([4, 7]);
 
+    // Add the X Axis
+    svg.append("g")
+      .attr("transform", "translate(0," + height_1 + ")")
+      .call(d3.axisBottom(x)
+          .ticks(d3.timeYear.every(1)) // Increase the tick frequency to every 2 years
+          .tickFormat(d3.timeFormat("%Y")) // Format the tick values as 4-digit years
+      )
+      .selectAll("text")
+      .style("font-size", "12px") ;// Increase the font size of the axis labels
+
+
+    svg.append("g")
+      .append("text")
+      .attr("fill", "#000")
+      .attr("x", width_1 / 2 - 10)
+      .attr("y", 570)
+      .text("Año")
+      .style("font-size", "15px")
+      .style("font-weight", "bold");
+
+
+    // Add the Y Axis
+    svg.append("g")
+      .call(d3.axisLeft(y))
+      .selectAll("text")
+      .style("font-size", "12px"); // Increase the font size of the axis labels
+
+
+    svg.append("g").append("text")
+      .attr("fill", "#000")
+      .attr("x", -height_1 / 2)
+      .attr("y", -40)
+      .text("Promedio general")
+      .style("font-size", "15px")
+      .attr("transform", "rotate(-90)")
+      .attr("text-anchor", "middle")
+      .style("font-weight", "bold")
+
     // Add the valueline path
     var typePaths = svg.selectAll(".typePath")
         .data(Array.from(dataByType.entries())) // convert Map to Array
@@ -79,12 +117,12 @@ function updateLineGraph(data) {
         .attr("stroke-width", 1.5);
     typePaths.attr("d", function(d) { return valueline(d[1]); }) // set 'd' attribute for each path
 
-   // Create a tooltip element
+    // Create a tooltip element
     var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-    // In the part where you define the scatter plot:
+    // Add the points
     svg.selectAll("dot")
     .data(data)
     .enter().append("circle")
@@ -119,110 +157,66 @@ function updateLineGraph(data) {
                 type: e.type
             };
         });
-
         tooltip.html("<p>Tipo de establecimiento: <strong>" + d.type + "</strong></p>" +
-"<p>Diferencia de promedio general con establecimientos de tipo:</p>" +
-diffGrades.map(function(e) {
-    if (e.type !== d.type){
-        return  "<p><strong>"+ e.type + "</strong>"+ ": " + d3.format(".3f")(e.diff) + "</p>"
-    }
-}).filter(Boolean).join(""))
-.style("left", (event.pageX + 10) + "px")
-.style("top", (event.pageY - 28) + "px");
+        "<p>Diferencia de promedio general con establecimientos de tipo:</p>" +
+        diffGrades.map(function(e) {
+            if (e.type !== d.type){
+                return  "<p><strong>"+ e.type + "</strong>"+ ": " + d3.format(".3f")(e.diff) + "</p>"
+              }
+            }).filter(Boolean).join(""))
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function() {
+            // Hide the tooltip
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+      });
 
-    })
-    .on("mouseout", function() {
-        // Hide the tooltip
-        tooltip.transition()
-            .duration(500)
-            .style("opacity", 0);
-    });
+    // Create a legend
+    var legend = SVG2.append("g")
+        .attr("class", "legend")
+        .attr("transform", "translate(350, 400)")
 
-// Create a legend
-var legend = SVG2.append("g")
-    .attr("class", "legend")
-    .attr("transform", "translate(350, 400)")
+    var legendBackground = legend.append("rect")
+        .attr("width", 220) // Adjust the width as needed
+        .attr("height", 100) // Adjust the height as needed
 
-var legendBackground = legend.append("rect")
-    .attr("width", 220) // Adjust the width as needed
-    .attr("height", 100) // Adjust the height as needed
+    // Define the legend data with establishment types and colors
+    var legendData = [
+        { type: "Municipal", color: "red" },
+        { type: "Particular Subvencionado", color: "green" },
+        { type: "Particular Pagado", color: "purple" }
+    ];
 
-// Define the legend data with establishment types and colors
-var legendData = [
-    { type: "Municipal", color: "red" },
-    { type: "Particular Subvencionado", color: "green" },
-    { type: "Particular Pagado", color: "purple" }
-];
+    // Add color-coded rectangles and labels to the legend
+    var legendItems = legend.selectAll(".legend-item")
+        .data(legendData)
+        .enter()
+        .append("g")
+        .attr("class", "legend-item")
+        .attr("transform", function(d, i) {
+            return "translate(20, " + (i * 20 + 20) + ")";
+        });
 
-// Add color-coded rectangles and labels to the legend
-var legendItems = legend.selectAll(".legend-item")
-    .data(legendData)
-    .enter()
-    .append("g")
-    .attr("class", "legend-item")
-    .attr("transform", function(d, i) {
-        return "translate(20, " + (i * 20 + 20) + ")";
-    });
+    legendItems.append("rect")
+        .attr("x", -10)
+        .attr("y", 0)
+        .attr("width", 14)
+        .attr("height", 14)
+        .style("fill", function(d) {
+            return d.color;
+        });
 
-legendItems.append("rect")
-    .attr("x", -10)
-    .attr("y", 0)
-    .attr("width", 14)
-    .attr("height", 14)
-    .style("fill", function(d) {
-        return d.color;
-    });
-
-legendItems.append("text")
-    .attr("x", 10)
-    .attr("y", 9)
-    .attr("dy", ".35em")
-    .text(function(d) {
-        return d.type;
-    })
-    .style("font-size", "14px");
-
-
-    // Add the X Axis
-    svg.append("g")
-    .attr("transform", "translate(0," + height_1 + ")")
-    .call(d3.axisBottom(x)
-        .ticks(d3.timeYear.every(1)) // Increase the tick frequency to every 2 years
-        .tickFormat(d3.timeFormat("%Y")) // Format the tick values as 4-digit years
-    )
-    .selectAll("text")
-    .style("font-size", "12px") ;// Increase the font size of the axis labels
-
-
-    svg.append("g")
-    .append("text")
-    .attr("fill", "#000")
-    .attr("x", width_1 / 2 - 10)
-    .attr("y", 570)
-    .text("Año")
-    .style("font-size", "15px")
-    .style("font-weight", "bold");
-
-
-    // Add the Y Axis
-    svg.append("g")
-    .call(d3.axisLeft(y))
-    .selectAll("text")
-    .style("font-size", "12px"); // Increase the font size of the axis labels
-
-
-    svg.append("g")
-    .append("text")
-    .attr("fill", "#000")
-    .attr("x", -height_1 / 2)
-    .attr("y", -40)
-    .text("Promedio general")
-    .style("font-size", "15px")
-    .attr("transform", "rotate(-90)")
-    .attr("text-anchor", "middle")
-    .style("font-weight", "bold")
-
-        // rotate text
+    legendItems.append("text")
+        .attr("x", 10)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .text(function(d) {
+            return d.type;
+        })
+        .style("font-size", "14px");
 };
 
 // Update the chart when the user changes the years
